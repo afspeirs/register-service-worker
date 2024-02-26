@@ -1,5 +1,5 @@
 {
-  "name": "@afspeirs/register-service-worker",
+  "name": "@afspeirs/service-worker",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",
@@ -9,9 +9,6 @@
     "build": "tsup",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "bin": {
-    "generate-service-worker": "./dist/generate-service-worker.js"
-  },
   "author": "AFSpeirs",
   "license": "ISC",
   "devDependencies": {
@@ -20,7 +17,14 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "workbox-cli": "^7.0.0",
     "workbox-window": "^7.0.0"
+  },
+  "peerDependencies": {
+    "workbox-cli": "^7.0.0"
+  },
+  "peerDependenciesMeta": {
+    "workbox-cli": {
+      "optional": false
+    }
   }
 }
