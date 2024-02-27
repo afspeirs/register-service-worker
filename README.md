@@ -3,6 +3,8 @@
 [![NPM Version][npm-version-shield]][npm-url]
 [![NPM Bundle Size][npm-bundle-size-shield]][npm-url]
 
+> Integrate a service-worker easily into your website
+
 ## About The Project
 
 I am always using the same code across all of my web apps to install a service worker.
@@ -15,6 +17,8 @@ This projects contains the code I use within every project to initialise the ser
 
 - [Getting Started](#getting-started)
 - [Prerequisites](#prerequisites)
+  - [Create config file](#create-config-file)
+  - [postbuild script](#postbuild-script)
 - [Installation](#installation)
 - [Usage](#usage)
 - [API](#api)
@@ -30,7 +34,39 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Prerequisites
 
-<!-- TODO: write about how to use workbox-cli and include the necessary scripts in your project -->
+Because we use workbox-window in this package. `workbox-cli` has been set as a peer dependency (which means that it will be installed in your project for you). This means that you can use `workbox-cli` commands within your builds scripts.
+
+### Create config file
+
+Create a config file called `workbox.config.cjs` (The name doesn't really matter, you just need to enter the same filename in the [postbuild](#postbuild-script) step)
+
+```js
+module.exports = {
+  globDirectory: 'dist/',
+  globPatterns: [
+    '**/*.{css,js,png,html,webmanifest}',
+  ],
+  swDest: 'dist/service-worker.js',
+  skipWaiting: true,
+  clientsClaim: true,
+};
+```
+
+> For more information view the [documentation site for generateSW config options](https://developer.chrome.com/docs/workbox/modules/workbox-build#type-GenerateSWOptions)
+
+### `postbuild` script
+
+Update your package.json to have the following `postbuild` script so that the service-worker is generated:
+
+```json
+"scripts": {
+  ...
+  "postbuild": "workbox generateSW workbox.config.cjs"
+  ...
+}
+```
+
+> For more information view the [documentation site for generateSW](https://developer.chrome.com/docs/workbox/modules/workbox-cli#generatesw)
 
 ## Installation
 
@@ -102,7 +138,7 @@ Example:
 import { registerServiceWorker } from '@afspeirs/service-worker';
 
 registerServiceWorker({
-  register: true, // this is just
+  register: true,
   pathToServiceWorker: '/sw.js',
 });
 ```
