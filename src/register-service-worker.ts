@@ -23,3 +23,10 @@ export async function registerServiceWorker({
     wb.register();
   }
 }
+
+declare global {
+  interface WindowEventMap {
+    swNewContentAvailable: CustomEvent,
+    swContentCached: CustomEvent,
+  }
+}
