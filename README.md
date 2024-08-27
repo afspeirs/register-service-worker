@@ -22,9 +22,10 @@ This projects contains the code I use within every project to initialise the ser
 - [Installation](#installation)
 - [Usage](#usage)
 - [API](#api)
-  - [registerServiceWorker](#registerserviceworker)
-    - [register parameter](#register-parameter)
-    - [pathToServiceWorker parameter](#pathtoserviceworker-parameter)
+  - [registerServiceWorker](#function-registerserviceworker)
+- [Custom Events](#custom-events)
+  - [sw:content-cached](#swcontent-cached)
+  - [sw:new-content-available](#swnew-content-available)
 - [Roadmap](#roadmap)
 - [License](#license)
 
@@ -40,7 +41,7 @@ Because we use workbox-window in this package. `workbox-cli` has been set as a p
 
 Create a config file called `workbox.config.cjs` (The name doesn't really matter, you just need to enter the same filename in the [postbuild](#postbuild-script) step)
 
-```js
+```javascript
 module.exports = {
   globDirectory: 'dist/',
   globPatterns: [
@@ -84,75 +85,63 @@ Once installed in your project you can include import/require the code.
 
 For example in a JavaScript project (using [Vite](https://vitejs.dev/)):
 
-```js
+```javascript
 import { registerServiceWorker } from '@afspeirs/service-worker';
 
 registerServiceWorker({
   register: import.meta.env.PROD,
-  pathToServiceWorker: '/service-worker.js',
 });
 ```
 
 ## API
 
-### registerServiceWorker
+### Function: `registerServiceWorker`
 
-This is the only exported function from the package currently.
+Registers a service worker using the Workbox library and dispatches custom events based on the service worker's installation status.
 
-```ts
-registerServiceWorker(register: boolean, pathToServiceWorker: string = '/service-worker.js')
-```
+| Parameter           | Type    | Default value          | Required | Description                                    |
+| ------------------- | ------- | ---------------------- | -------- | ---------------------------------------------- |
+| register            | boolean | N/A                    | Yes      | When to register the service worker            |
+| pathToServiceWorker | string  | `'/service-worker.js'` | No       | The path to where the service worker is stored |
 
-Supported params for the `registerServiceWorker` function are listed below.
+Usage Example:
 
-#### `register` parameter
-
-| Type    | Default value | Required | Description                         |
-| ------- | ------------- | -------- | ----------------------------------- |
-| boolean | N/A           | Yes      | When to register the service worker |
-
-If present, the request will be performed as soon as the component is mounted
-
-Example:
-
-```js
-import { registerServiceWorker } from '@afspeirs/service-worker';
-
-registerServiceWorker({
-  register: import.meta.env.PROD,
-  // register: process.env.NODE_ENV === 'production',
-});
-```
-
-#### `pathToServiceWorker` parameter
-
-| Type   | Default value          | Required | Description                                    |
-| ------ | ---------------------- | -------- | ---------------------------------------------- |
-| string | `'/service-worker.js'` | No       | The path to where the service worker is stored |
-
-If present, the service worker at the path will be used
-
-Example:
-
-```js
+```javascript
 import { registerServiceWorker } from '@afspeirs/service-worker';
 
 registerServiceWorker({
   register: true,
-  pathToServiceWorker: '/sw.js',
+  // register: import.meta.env.PROD,
+  // register: process.env.NODE_ENV === 'production',
+  pathToServiceWorker: '/custom-service-worker.js',
 });
 ```
 
-<!-- ## Contributing
+## Custom Events
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+### `sw:content-cached`
 
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Add your changes: `git add .`
-4. Commit your changes: `git commit -am 'Add some feature'`
-5. Push to the branch: `git push origin my-new-feature`
-6. Submit a pull request :sunglasses: -->
+This event is dispatched (on the `window`) when the service worker is installed for the first time and the content is cached.
+
+Usage Example:
+
+```javascript
+window.addEventListener('sw:content-cached', () => {
+  console.log('Content has been cached for offline use.');
+});
+```
+
+### `sw:new-content-available`
+
+This event is dispatched (on the `window`) when a new version of the service worker is installed and there is new content available.
+
+Usage Example:
+
+```javascript
+window.addEventListener('sw:new-content-available', () => {
+  console.log('New content is available. Please refresh the page.');
+});
+```
 
 ### Roadmap
 
