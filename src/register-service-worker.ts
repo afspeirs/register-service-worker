@@ -11,11 +11,11 @@ export async function registerServiceWorker({
     wb.addEventListener('installed', () => {
       if (navigator.serviceWorker.controller) {
         // New Content Available event
-        const event = new Event('sw:new-content-available');
+        const event = new Event('swNewContentAvailable');
         window.dispatchEvent(event);
       } else {
         // Content Cached event
-        const event = new Event('sw:content-cached');
+        const event = new Event('swContentCached');
         window.dispatchEvent(event);
       }
     });
@@ -26,7 +26,7 @@ export async function registerServiceWorker({
 
 declare global {
   interface WindowEventMap {
-    'sw:content-cached': Event;
-    'sw:new-content-available': Event;
+    swNewContentAvailable: Event,
+    swContentCached: Event,
   }
 }
